@@ -25,15 +25,21 @@ VARIABLES INDEPENDIENTES:
 Responsable: Claudia Cabrel
 
   Variable 1: Índice de la Percepción de la Corrupción
+    
     Base de datos: corrupcion_datos
+    
     Justificación:
 
   Variable 2: Índice de Países con Educación Secundaria pero sin Educación Terciaria
+    
     Base de datos: educacionsecundaria_datos
+    
     Justificación:
     
   Variable 3: Índice de GINI
+    
     Base de datos:  gini_datos
+    
     Justificación:
     
     
@@ -41,7 +47,9 @@ Responsable: Claudia Cabrel
 Responsable: Aisha Martínez
 
   Variable 1: Índice de libertad económica
+    
     Base de datos: Wikipedia (libeco_data)
+    
     Justificación: Se comprobará que el índice de libertad económica sí influye en el índice de democracia. Esto se debe a que un mayor índice de libertad económica en los Estados tendrá como consecuencia un mayor impacto de forma positiva en el índice de democracia aumentando su nivel en el Estado. Como se menciona en el diario La República, “a mayor libertad económica se registra menos pobreza, mayor ingreso per cápita, más democracia, mejor desarrollo humano, etc.”.
     
    Variable 2: Tasa de crecimiento de PBI
