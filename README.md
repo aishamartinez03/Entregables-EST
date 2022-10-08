@@ -28,7 +28,7 @@ Responsable: Claudia Cabrel
     
     Base de datos: corrupcion_datos
     
-    Justificación:
+    Justificación: 
 
   Variable 2: Índice de Países con Educación Secundaria pero sin Educación Terciaria
     
