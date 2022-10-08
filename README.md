@@ -53,12 +53,16 @@ Responsable: Aisha Martínez
     Justificación: Se comprobará que el índice de libertad económica sí influye en el índice de democracia. Esto se debe a que un mayor índice de libertad económica en los Estados tendrá como consecuencia un mayor impacto de forma positiva en el índice de democracia aumentando su nivel en el Estado. Como se menciona en el diario La República, “a mayor libertad económica se registra menos pobreza, mayor ingreso per cápita, más democracia, mejor desarrollo humano, etc.”.
     
    Variable 2: Tasa de crecimiento de PBI
+     
      Base de datos: Banco Mundial (pbi_data)
+     
      Justificación: Nos permitirá saber si un indicador económico como lo es el índice de PBI per cápita, entendido como una variable que mide el crecimiento económico de distintos Estados, influye en el incremento o disminución del índice de la democracia debido a que, como se menciona en el Diario “Gestión”, un aumento del PBI per cápita “no es un fin, sino un medio” para poder lograr un mayor desarrollo en el país.
 
 
    Variable 3: Índice de paridad política
+     
       Base de datos: IPU PARLINE (parpol_data)
+      
       Justificación: Nos permitirá conocer que el índice de paridad política, entendido como el instrumento que permite ejercer los derechos políticos de las mujeres en un determinado país, se presenta como un factor influyente en el aumento de democracia en cada país. Este es un factor importante para la investigación debido a que, como se menciona en el artículo: “Índice de paridad política” de Atenea es Paridad (Mecanismo incentivado por ONU Mujeres, PNUD e IDEA para acelerar la participación política paritaria de las mujeres en América Latina), “Por justicia democrática, las mujeres constituyen el 50% de la población y deben participar igualitariamente en la toma de decisiones”, de ser así se demostraría un mayor índice de democracia.
 
 
