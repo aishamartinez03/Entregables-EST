@@ -28,7 +28,7 @@ Responsable: Claudia Cabrel
     
     Base de datos: corrupcion_datos
     
-    Justificación: 
+    Justificación: Podemos comprobar que el índice de corrupción tiene influencia en los índices de democracia, esto es debido a que mediante la percepción de la corrupción en los Estados, se corrompen las instituciones, lo que genera que se vaya debilitando la confianza, ya que no hay una transparencia en las gestiones políticas y económicas de los países lo que ocasiona un efecto en el desempeño de funcionarios públicos y la confianza que se tiene hacia las instituciones de ejercer correctamente sus labores.
 
   Variable 2: Índice de Países con Educación Secundaria pero sin Educación Terciaria
     
