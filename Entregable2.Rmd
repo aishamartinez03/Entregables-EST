@@ -51,10 +51,23 @@ anova(modelo)
 summary(modelo)
 ```
 
+# Mediante el análisis de la regresión lineal realizado, se observa que la variable dependiente (índice de democracia mundial) se ve influenciado por las tres variables independientes, en mayor medida por la variable independiente de libertad económica.
 
 
 
 
+
+---
+title: "claudia"
+output: html_document
+date: "2022-10-07"
+---
+
+```{r}
+gini_datos = "https://raw.githubusercontent.com/aishamartinez03/Entregables-EST/main/giniexport.csv"
+gini = import(gini_datos,sep=",")
+
+```
 
 
 
