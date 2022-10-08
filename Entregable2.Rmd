@@ -75,6 +75,13 @@ educacion_secundaria = "https://raw.githubusercontent.com/aishamartinez03/Entreg
 educasec=import(educacion_secundaria,sep=";")
 ```
 
+
+```{r}
+cpi_score = "https://raw.githubusercontent.com/aishamartinez03/Entregables-EST/main/cpi_score.csv"
+corrupcion=import(cpi_score,sep=";")
+```
+
+
 ```{r}
 dataclaudia = merge(educasec,gini)
 ```
