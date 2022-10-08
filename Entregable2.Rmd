@@ -82,8 +82,12 @@ corrupcion=import(cpi_score,sep=";")
 ```
 
 
-```{r}
-dataclaudia = merge(educasec,gini)
+``{r}
+data2 = merge(educasec,gini)
 ```
 
+
+```{r}
+dataclaudia = merge(data2,corrupcion)
+```
 
