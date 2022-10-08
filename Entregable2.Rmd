@@ -1,0 +1,61 @@
+---
+title: "aisha"
+output: html_document
+date: "2022-10-08"
+---
+
+```{r}
+library(htmltab)
+
+link = "https://en.wikipedia.org/wiki/Democracy_Index"
+path = "/html/body/div[3]/div[3]/div[5]/div[1]/table[5]"
+vardep = htmltab(link, path)
+head(vardep)
+```
+```{r}
+vardep = vardep[-c(1:2, 4:5, 7:18)]
+
+link = "https://en.wikipedia.org/wiki/Index_of_Economic_Freedom"
+path = "/html/body/div[3]/div[3]/div[5]/div[1]/table[1]"
+libeco = htmltab(link, path)
+head(libeco)
+```
+
+
+```{r}
+libeco = libeco[-c(2,4)]
+
+library(rio)
+library(dplyr)
+
+
+pbi_parpol = "https://raw.githubusercontent.com/aishamartinez03/Entregables-EST/main/pbi_parpol.csv"
+pbiparpol=import(pbi_parpol,sep=";")
+
+data1=merge(libeco,vardep)
+str(data1)
+```
+
+```{r}
+data1[,2:3]=lapply(data1[,2:3], as.numeric)
+str(data1)
+```
+
+```{r}
+dataaisha = merge(data1,pbiparpol)
+```
+
+```{r}
+modelo=lm(vardep~libeco+pbiparpol, dataaisha)
+anova(modelo)
+summary(modelo)
+```
+
+
+
+
+
+
+
+
+
