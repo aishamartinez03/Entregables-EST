@@ -1,0 +1,230 @@
+---
+title: "Limpieza de datos"
+author: "Aisha y Claudia"
+date: '2022-10-30'
+output: html_document
+---
+### 1. Apertura y limpieza de las bases de datos
+##### 1.1. Apertura de la data
+**Variable dependiente: Democracia**
+```{r}
+library(htmltab)
+link = "https://en.wikipedia.org/wiki/Democracy_Index"
+path = "/html/body/div[3]/div[3]/div[5]/div[1]/table[5]"
+vardep = htmltab(link, path)
+head(vardep)
+```
+
+**Variables independiente**
+- Aisha Martinez
+Libertad económica
+```{r}
+#Importamos la data de libertad económica
+link = "https://en.wikipedia.org/wiki/Index_of_Economic_Freedom"
+path = "/html/body/div[3]/div[3]/div[5]/div[1]/table[1]"
+libeco = htmltab(link, path)
+head(libeco)
+```
+Índice de Paridad política
+```{r}
+library(rio)
+#Importamos la data de paridad política
+parpol = "https://raw.githubusercontent.com/aishamartinez03/Entregables-EST/main/parpoldata.csv"
+parpol =import(parpol)
+```
+
+Tasa de crecimiento de PBI
+```{r}
+library(rio)
+#Importamos la data de índice de crecimiento de PBI
+pbi = "https://raw.githubusercontent.com/aishamartinez03/Entregables-EST/main/pbidata.csv"
+pbi=import(pbi,sep=";")
+```
+
+- Claudia Cabrel
+Percepción de corrupción
+```{r}
+library(rio)
+corrupcion = "https://raw.githubusercontent.com/aishamartinez03/Entregables-EST/main/v.corrupcion.csv"
+corrupcion_ind=import(corrupcion, sep=",")
+```
+
+Índice Gini
+```{r}
+gini = "https://raw.githubusercontent.com/aishamartinez03/Entregables-EST/main/v.%20gini.csv"
+gini_ind=import(gini, sep=",")
+```
+
+Nivel educativo
+```{r}
+educacion ="https://raw.githubusercontent.com/aishamartinez03/Entregables-EST/main/v.%20gini.csv"
+educa_ind=import(educacion, sep= ",")
+```
+
+
+
+##### 1.2. Limpieza de la base de datos
+**Variable dependiente**
+```{r}
+#En este caso, vamos a trabajar con el año 2020. Por ende, podemos eliminar las columnas innecesarias.
+vardep=vardep[,c(3,6)]
+#Cambiamos el nombre a las columnas
+names(vardep)= c("country","scoredemo")
+#Cambiamos la variable scoredemo a numerica
+vardep$scoredemo=as.numeric(vardep$scoredemo)
+#Verificamos la estructura
+str(vardep)
+
+```
+
+
+**Variables independiente**
+- Aisha Martinez
+Libertad económica
+```{r}
+#Eliminamos las columnas innecesarias
+libeco=libeco[,c(1,3)]
+#Cambiamos el nombre a las columnas
+names(libeco)= c("country","scorelibeco")
+#Cambiamos la variable scorelibeco a numérica
+libeco$scorelibeco=as.numeric(libeco$scorelibeco)
+#Revisamos la estructura
+str(libeco)
+```
+Índice de Paridad política
+```{r}
+#Eliminamos las columnas innecesarias
+parpol=parpol[,c(2,6)]
+#Cambiamos el nombre a las columnas
+names(parpol)= c("country","scoreparpol")
+#Revisamos la estructura
+str(parpol)
+```
+```{r}
+#Eliminamos las filas innecesarias
+parpol = parpol [-c(1:3),]
+```
+
+```{r}
+library (stringr)
+parpol$scoreparpol=gsub('%','',parpol$scoreparpol)
+```
+
+```{r}
+#Cambiamos la variable scoreparpol a numérica
+parpol$scoreparpol=as.numeric(parpol$scoreparpol)
+#Revisamos la estructura
+str(parpol)
+```
+```{r}
+#Eliminamos las filas innecesarias
+parpol = parpol [-c(1:3),]
+```
+
+
+Tasa de crecimiento de PBI
+```{r}
+#Eliminaremos las columnas innecesarias.
+pbi=pbi[,c(1,50)]
+#Cambiamos el nombre a las columnas
+names(pbi)= c("country","scorepbi")
+#Cambiamos la variable scoredemo a numerica
+pbi$scorepbi=as.numeric(pbi$scorepbi)
+#Verificamos la estructura
+str(pbi)
+```
+```{r}
+#Eliminamos las filas innecesarias
+pbi = pbi [-c(1:4),]
+```
+
+
+-Claudia Cabrel
+
+Percepción de corrupción
+```{r}
+library(rio)
+corrupcion_ind = corrupcion_ind[c(1,4)]
+``` 
+
+```{r}
+#Cambiamos el nombre a las columnas
+colnames(corrupcion_ind) = c("country", "cpiscore")
+#Revisamos la estructura
+str(corrupcion_ind)
+```
+
+Nivel de Educación
+```{r}
+educa_ind = educa_ind[c(1,3)]
+```
+
+```{r}
+#Cambiamos el nombre a las columnas
+colnames(educa_ind) = c("country", "educasec")
+#Revisamos la estructura
+str(educa_ind)
+```
+
+Índice Gini
+```{r}
+gini_ind = gini_ind[c(1,3)]
+```
+
+```{r}
+#Cambiamos el nombre a las columnas
+colnames(gini_ind) = c("country", "gini_ind")
+#Revisamos la estructura
+str(gini_ind)
+```
+
+
+##### 2. Integración de datos
+
+```{r}
+#Integramos las datas
+data1= merge(vardep,libeco, by.x = "country", by.y = "country",
+all.x = T)
+```
+
+```{r}
+data2=merge(data1,parpol,by.x = "country", by.y = "country",
+all.x = T)
+```
+
+```{r}
+data3=merge(data2,pbi,by.x = "country", by.y = "country",
+all.x = T)
+```
+
+```{r}
+data4=merge(data3,corrupcion_ind,by.x = "country", by.y = "country",
+all.x = T)
+```
+
+```{r}
+data5=merge(data4,educa_ind,by.x = "country", by.y = "country",
+all.x = T)
+```
+
+```{r}
+datafinal=merge(data5,gini_ind,by.x = "country", by.y = "country",
+all.x = T)
+```
+
+
+
+Por último, nos quedamos con los casos completos para cada variable.
+```{r}
+datafinal <- datafinal[complete.cases(datafinal), ]
+```
+
+
+##### 3. Exportar la data
+Cerramos el proceso de limpieza, exportando la data como csv.
+```{r}
+library(rio)
+export(datafinal, "datafinal.csv")
+```
+
+
