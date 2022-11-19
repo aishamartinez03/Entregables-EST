@@ -12,6 +12,7 @@ output:
     toc: yes
 subtitle: "Curso: POL304 - Estadística para el análisis político 2"
 ---
+hola
 
 ## Introducción
 
