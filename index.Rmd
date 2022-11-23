@@ -12,7 +12,6 @@ output:
     toc: yes
 subtitle: "Curso: POL304 - Estadística para el análisis político 2"
 ---
-hola
 
 ## Introducción
 
@@ -48,7 +47,16 @@ modelsummary(modelo, title = "Resumen de Regresion Lineal",
              stars = TRUE,
              output = "kableExtra")
 ```
+
 * Como resultado se observa que la variable con mayor impacto en el índice de democracia es la de libertad económica.
+
+En cuanto al Coeficiente de Determinación también conocido como R2, este nos ayudará a interpretar el porcentaje de variabilidad total de la variable dependiente que es explicada por la variable independiente. Estos valores pueden ir del 0 al 1, si el caso del R2 se encuentra más cercano a 1, mayor será la variabilidad explicada, ayudando a indicar el ajuste del modelo.
+
+Por ende, si bien la variable más significativa en Modelo 1  seria libertad económica, por ende, a mayor libertad económica, mayor democracia.
+
+En ese sentido, de acuerdo a los resultados en el Modelo 1, se presenta un R ajustado a 0.589 | (58.9%), esto sugiere que es un modelo que al sobrepasar el 50% indicaría un alto índice de variabilidad en las variables de paridad política, la tasa de crecimeinto de PBI y el índice de libertad económica.
+
+
 
 Por otra parte, se hará una regresión lineal múltiple con las otras tres variables, las cuales serán el índice de percepción de corrupción, los países con educación secundaria pero no terciaria y el coeficiente de GINI.
 
@@ -73,6 +81,10 @@ modelsummary(modelo, title = "Resumen de Regresion Lineal 2",
 
 * Como resultado se observa que la variable con mayor impacto en el índice de democracia es la de la percepción de corrupción.
 
+En el Modelo 2, la variable más significativa seria la percepción de corrupción, por ende, a mayor percepción de corrupción, mayor democracia.
+
+En ese sentido, de acuerdo a los resultados en el Modelo 2, se presenta un R ajustado a 0.535 | (53.5%), este modelo presenta un porcentaje menor por aproximadamente 5% a diferencia del Modelo 1 con las variables anteriores. Sin embargo, sigue siendo un medianamente alto porcentaje que indica el índice de variabilidad en las variables de percepción de corrupción y educación.
+
 
 En esta sección, se realizará una comparación de ambos modelos:
 
@@ -80,14 +92,17 @@ En esta sección, se realizará una comparación de ambos modelos:
 library(stargazer)
 stargazer(modelo1,modelo2, type ="text")
 ```
+
 * Se observa, en los resultados obtenidos al comparar ambos modelos, que existe una fuerza en la relación entre el modelo y la variable dependiente debido a que la diferencia entre las observaciones y los valores pronosticados son pequeñas. De igual forma, el R2 nos indica que el porcentaje de la varianza en la variable dependiente que las variables independientes explican colectivamente ha obtenido un valor mayor al 50%, por ende, nos presenta que el modelo explica en mayor medida la variabilidad de los datos en torno a su media. Sin embargo, el R2 ajustado nos demustra que al haberse obtenido un valor menor a 1 no hay valores predictivos en los modelos.
 
 Por útlimo, se realizará un tercer modelo en el que uniremos las seis variables para observar si es que los resultados cambian, si es que hay más variables con mayor impacto en el nivel de democracia o si es que se da el caso contrario.
+
 
 ```{r echo=FALSE}
 modelo= lm(scoredemo ~  cpiscore + educasec + gini_ind + scorelibeco + scoreparpol + scorepbi, data=data) 
 summary(modelo)
 ```
+
 ```{r echo=FALSE}
 equatiomatic::extract_eq(modelo, use_coefs = TRUE)
 ```
@@ -102,6 +117,11 @@ modelsummary(modelo, title = "Resumen de Regresion Lineal",
 ```
 
 Por útlimo, al haber analizado los seis factores en conjunto en el mismo modelo se observa que solo la libertad económica tiene un efecto significativo positivo en el índice de democracia. Se debe tener en cuenta que el resultado fue distinto al haber analizado los seis factores por separado (dos grupos de tres), pues en ese caso, se observó que el índice de la percepción de corrupción también tenía un valor significativo. Esto nos brinda como conclusión que a mayor libertad económica, y un mayor índice de la percepción de la corrupción se presentará mayor nivel de democracia. Esto es certero al aplicarlo en la vida cotidianda pues, como se mencionó en un principio, se comprueba que el índice de corrupción tiene influencia en los índices de democracia debido a que mediante la percepción de la corrupción se permite identificar la desconfianza de los ciudadanos en sus Estados debido a que no hay una transparencia en las gestiones políticas y económicas de los países. Asimismo, como se menciona en el portal de CONFIEP (2022), el escritor Fareed Zakaria observa que "la mayoría de las democracias pobres del mundo son democracias no liberales—es decir, regímenes políticos en los cuales no están bien establecidas las libertades, salvo la libertad de elegir a los que gobiernan". Por lo tanto, se entiende que los países con democracias pobres son aquellos que no se rigen por una ideología liberal, por lo tanto, el facctor de la libertad económica tiene un impacto en el índice de democracia de los Estados.
+
+En este último Modelo 3, la variable más significativa seria la libertad económica frente a todas las dempás variables vistas en el Modelo 1 y el Modelo 2.
+
+Finalmente, en los resultados de este Modelo 3, se presenta un R ajustado a 0.619 | (61.8%), este modelo presenta un porcentaje mayor por aproximadamente 5.6% que el Modelo 1 y 2 en promedio. Esto nos indica un alto índice de variabilidad en este tercer modelo.
+
 
 
 ## 3. Análisis factorial
