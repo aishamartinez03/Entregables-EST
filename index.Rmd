@@ -3,15 +3,14 @@ title: "Análisis de factores que influyen en el índice de democracia"
 author: "Claudia Cabrel y Aisha Martínez"
 date: "2022-11-04"
 output:
-  html_document:
-    toc: yes
-    df_print: paged
+
   prettydoc::html_pretty:
     theme: cayman
     highlight: github
     toc: yes
 subtitle: "Curso: POL304 - Estadística para el análisis político 2"
 ---
+
 
 ## Introducción
 
