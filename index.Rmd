@@ -252,6 +252,7 @@ data$cpiscore=scoredemo[,2]
 
 ggplot(data=data,aes(x=scorelibeco,y=scoredemo)) + geom_point() + theme_minimal() + labs(x="Indice de Democracia (original)", y="Indice de Democracia EFA (cambiado)")
 ```
+
 ```{r}
 scoredemo=normalize(resfa$scores, 
                        method = "range", 
@@ -263,3 +264,105 @@ data$cpiscore=scoredemo[,2]
 
 ggplot(data=data,aes(x=cpiscore,y=scoredemo)) + geom_point() + theme_minimal() + labs(x="Indice de Democracia (original)", y="Indice de Democracia EFA (cambiado)")
 ```
+## Análisis de cluster
+
+* No podemos usar la columna 'country' en la clusterización, pero tampoco debemos perderla, por lo que se recomienda usar esos nombres en lugar del nombre de fila.
+
+```{r, echo=FALSE}
+dataClus=data[,c(2:8)]
+row.names(dataClus)=data$country
+```
+
+* Ya con los datos en el objeto dataClus, calculemos la matriz de distancias entre los casos (paises):
+
+```{r, echo=FALSE}
+library(cluster)
+g.dist = daisy(dataClus, metric="gower")
+```
+
+
+# Proceso de clusterización
+
+## Para realizar el proceso de clusterización se hará uso de la Estrategia Jerárquica - divisiva
+
+Primero, se decidirá la cantidad de cluster a utilizar mediante una solicitud usando el estadístico 'gap'
+
+```{r, echo=FALSE}
+fviz_nbclust(dataClus, hcut,diss=g.dist,method = "gap_stat",k.max = 10,verbose = F,hc_func = "diana")
+```
+
+## Clusterizar vía DIANA
+
+```{r, echo=FALSE}
+set.seed(123)
+res.diana <- hcut(g.dist, k = 2,hc_func='diana')
+dataClus$diana=res.diana$cluster
+head(dataClus,15)%>%kbl%>%kable_styling()
+```
+
+```{r, echo=FALSE}
+fviz_dend(res.diana, cex = 0.7, horiz = T, main = "")
+```
+
+
+```{r, echo=FALSE}
+fviz_silhouette(res.diana,print.summary = F)
+
+```
+* Nótese que no se presentan valores mal clusterizados; por ende, no habrá necesidad de evaluar los resultados.
+
+## Verificando Etiqueta
+* A continuación, exploraremos el promedio de cada cluster.
+
+```{r, echo=FALSE}
+aggregate(.~ diana, data=dataClus,mean)
+```
+
+* No se observa un orden, por lo tanto se reordenará.
+
+```{r, echo=FALSE}
+original=aggregate(.~ diana, data=dataClus,mean)
+original[order(original$scoredemo),]
+```
+Esas posiciones hay que usarlas para recodificar:
+
+```{r, echo=FALSE}
+dataClus$diana=dplyr::recode(dataClus$diana, `1` = 2, `2`=1)
+```
+
+
+Guardemos la columna de DIANA en la data integrada, y eliminemosla de dataClus.
+
+```{r, echo=FALSE}
+data$dianadatapoor=data$Pais
+data$dianadata=as.ordered(dataClus$diana)
+dataClus$diana=NULL
+```
+
+# Visualización comparativa
+
+Vamos a usar la matriz de distancia para darle a cada país una coordenada, tal que la distancia entre esos paises se refleje en sus posiciones. Eso requiere una técnica que proyecte las dimensiones originales en un plano bidimensional. Para ello usaremos la técnica llamada escalamiento multidimensional. Veamos algunas coordenadas.
+
+
+```{r, echo=FALSE}
+proyeccion = cmdscale(g.dist, k=2,add = T) 
+head(proyeccion$points,20)
+```
+
+Habiendo calculado la proyeccción, recuperemos las coordenadas del mapa del mundo basado en nuestras dimensiones nuevas:
+
+```{r, echo=FALSE}
+data$dim1 <- proyeccion$points[,1]
+data$dim2 <- proyeccion$points[,2]
+```
+
+```{r, echo=FALSE}
+library(ggrepel)
+base= ggplot(data,aes(x=dim1, y=dim2,label=row.names(dataClus))) 
+base + geom_text_repel(size=3, max.overlaps = 50,min.segment.length = unit(0, 'lines'))
+```
+Coloreemos el mapa anterior segun el cluster al que corresponden.
+
+
+
+
