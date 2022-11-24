@@ -207,6 +207,7 @@ Resultado visual: El resultado lo podemos ver de manera gráfica en la figura a 
 ```{r}
 fa.diagram(resfa,main = "Resultados del EFA")
 ```
+
 Habiendo evaluando los resultados obtenidos procederemos con la siguiente evaluación para responder a la pregunta: ¿Qué variables aportaron más a los factores?
 
 ```{r}
