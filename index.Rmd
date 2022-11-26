@@ -268,14 +268,14 @@ ggplot(data=data,aes(x=cpiscore,y=scoredemo)) + geom_point() + theme_minimal() +
 
 * No podemos usar la columna 'country' en la clusterización, pero tampoco debemos perderla, por lo que se recomienda usar esos nombres en lugar del nombre de fila.
 
-```{r, echo=FALSE}
+```{r}
 dataClus=data[,c(2:8)]
 row.names(dataClus)=data$country
 ```
 
 * Ya con los datos en el objeto dataClus, calculemos la matriz de distancias entre los casos (paises):
 
-```{r, echo=FALSE}
+```{r}
 library(cluster)
 g.dist = daisy(dataClus, metric="gower")
 ```
@@ -287,25 +287,25 @@ g.dist = daisy(dataClus, metric="gower")
 
 Primero, se decidirá la cantidad de cluster a utilizar mediante una solicitud usando el estadístico 'gap'
 
-```{r, echo=FALSE}
+```{r}
 fviz_nbclust(dataClus, hcut,diss=g.dist,method = "gap_stat",k.max = 10,verbose = F,hc_func = "diana")
 ```
 
 ## Clusterizar vía DIANA
 
-```{r, echo=FALSE}
+```{r}
 set.seed(123)
 res.diana <- hcut(g.dist, k = 2,hc_func='diana')
 dataClus$diana=res.diana$cluster
 head(dataClus,15)%>%kbl%>%kable_styling()
 ```
 
-```{r, echo=FALSE}
+```{r}
 fviz_dend(res.diana, cex = 0.7, horiz = T, main = "")
 ```
 
 
-```{r, echo=FALSE}
+```{r}
 fviz_silhouette(res.diana,print.summary = F)
 
 ```
@@ -314,26 +314,26 @@ fviz_silhouette(res.diana,print.summary = F)
 ## Verificando Etiqueta
 * A continuación, exploraremos el promedio de cada cluster.
 
-```{r, echo=FALSE}
+```{r}
 aggregate(.~ diana, data=dataClus,mean)
 ```
 
 * No se observa un orden, por lo tanto se reordenará.
 
-```{r, echo=FALSE}
+```{r}
 original=aggregate(.~ diana, data=dataClus,mean)
 original[order(original$scoredemo),]
 ```
 Esas posiciones hay que usarlas para recodificar:
 
-```{r, echo=FALSE}
+```{r}
 dataClus$diana=dplyr::recode(dataClus$diana, `1` = 2, `2`=1)
 ```
 
 
 Guardemos la columna de DIANA en la data integrada, y eliminemosla de dataClus.
 
-```{r, echo=FALSE}
+```{r}
 data$dianadatapoor=data$Pais
 data$dianadata=as.ordered(dataClus$diana)
 dataClus$diana=NULL
@@ -344,19 +344,66 @@ dataClus$diana=NULL
 Vamos a usar la matriz de distancia para darle a cada país una coordenada, tal que la distancia entre esos paises se refleje en sus posiciones. Eso requiere una técnica que proyecte las dimensiones originales en un plano bidimensional. Para ello usaremos la técnica llamada escalamiento multidimensional. Veamos algunas coordenadas.
 
 
-```{r, echo=FALSE}
+```{r}
 proyeccion = cmdscale(g.dist, k=2,add = T) 
 head(proyeccion$points,20)
 ```
 
 Habiendo calculado la proyeccción, recuperemos las coordenadas del mapa del mundo basado en nuestras dimensiones nuevas:
 
-```{r, echo=FALSE}
+
+
+```{r}
 data$dim1 <- proyeccion$points[,1]
 data$dim2 <- proyeccion$points[,2]
 ```
 
-```{r, echo=FALSE}
+```{r}
+#DATA PAÍSES
+ISODATA = import("https://raw.githubusercontent.com/Gbaldeonb/Estadistica/main/ISODATA.csv")
+```
+
+```{r}
+#VISUALIZANDO ISO DATA 
+colnames(ISODATA) = c("name","country", "iso2", "iso3")
+ISODATA$name=NULL
+ISODATA$iso2=NULL
+#Salvando Namibia
+ISODATA[ISODATA$Country=='Namibia','iso3']= 'NA'
+```
+
+```{r}
+library(rio)
+library(dplyr)
+library(ggplot2)
+library(cowplot)
+library(kableExtra)
+library(reshape)
+library(DT)
+library(equatiomatic)
+library(modelsummary)
+library(factoextra)
+library(cluster)
+```
+
+```{r}
+mapDIS=sf::read_sf("shapes")
+str(mapDIS)
+#merge iso + variable
+DATAVARIABLEDEPENDIENTE=inner_join(ISODATA,INDFELDATA ,by="Country") 
+#Juntamos información con el shape:
+mapDIS2=merge(mapDIS,DATAVARIABLEDEPENDIENTE,by.x='iso_3166_1_',by.y='iso3', all.x = T) #siempre primero el shape
+#PRIMERO EN X EL ISO DE SHAPES Y EN Y EL ISO DE DATA
+mapDIS2
+```
+
+
+
+
+
+
+
+```{r}
 library(ggrepel)
 base= ggplot(data,aes(x=dim1, y=dim2,label=row.names(dataClus))) 
 base + geom_text_repel(size=3, max.overlaps = 50,min.segment.length = unit(0, 'lines'))
