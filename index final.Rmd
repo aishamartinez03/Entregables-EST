@@ -1,0 +1,415 @@
+---
+title: "Análisis de factores que influyen en el índice de democracia"
+author: "Claudia Cabrel y Aisha Martínez"
+date: "2022-11-04"
+output:
+
+  prettydoc::html_pretty:
+    theme: cayman
+    highlight: github
+    toc: yes
+subtitle: "Curso: POL304 - Estadística para el análisis político 2"
+---
+
+
+## Introducción
+
+La siguiente investigación analiza los factores que pueden perjudicar el índice de democracia a nivel mundial. Durante el desarrollo de esta investigación se ha identificado que existen diversos factores que influencian en el índice de democracia; sin embargo, se han elegido seis, los cuales se considera que son los de mayor importancia. En primer lugar, se presentarán factores políticos, representados a través del índice de la percepción de la corrupción, y el índice de paridad política. En segundo lugar, se agregarán factores económicos representados a través de la tasa de crecimeinto de PBI, el índice de libertad económica y el coeficiente de GINI. Por último, se utilizarán los países con educación secundaria pero sin educación terciaria como indicador del factor educación. Por tal motivo, se buscará poner a prueba si la hipótesis presentada (estos factores afectan negativamente el índice de democracia a nivel mundial) es certera.
+
+```{r, echo=FALSE}
+library(rio)
+data= import("https://raw.githubusercontent.com/aishamartinez03/Entregables-EST/main/datafinal.csv")
+```
+
+## 1. Análisis rápido de la data
+
+Al visualizar la data sin haber realizado ningún análisis estadístico, se observa que países con un mayor índice de libertad económica presentan de igual manera un relativamente mayor puntaje en el índice de democracia como se presenta por ejemplo en países como el Reino Unido, Suecia y Suiza. Sin embargo, no necesariamente sucede lo mismo en el caso del índice de paridad política y su efecto en el nivel de democracia, pues, así algunos países tengan un alto nivel de paridad política en su gestión, como por ejemplo: Rwanda, Argentina y Emiratos Árabes, no cuentan con un alto nivel de democracia. El mismo caso se da con la tasa de crecimiento de PBI, el coeficiente de GINI y los países con nivel de educación secundaria pero no terciaria. Es por tal motivo que se procederá a realizar un análisis de regresión lineal para luego proceder con una comparación de los modelos con el fin de observar qué variables tienen un mayor impacto positivo en el nivel de democracia a nivel mundial y así poner a prueba y obtener resultados respaldados estadísticamente de lo recién evaluado a primera vista.
+
+## 2. Modelación
+
+En este caso, se hará una regresión lineal múltiple con tres primeras variables, las cuales serán el índice de libertad económica, la tasa de crecimiento de PBI y el puntaje de los países en su índice de paridad política.
+
+```{r echo=FALSE}
+modelo= lm(scoredemo ~ scorelibeco + scoreparpol + scorepbi, data=data) 
+summary(modelo)
+```
+
+```{r echo=FALSE}
+equatiomatic::extract_eq(modelo, use_coefs = TRUE)
+```
+
+```{r echo=FALSE}
+library(knitr)
+library(modelsummary)
+modelo1=list('OLS asegurados (I)'=modelo)
+modelsummary(modelo, title = "Resumen de Regresion Lineal",
+             stars = TRUE,
+             output = "kableExtra")
+```
+
+* Como resultado se observa que la variable con mayor impacto en el índice de democracia es la de libertad económica.
+
+En cuanto al Coeficiente de Determinación también conocido como R2, este nos ayudará a interpretar el porcentaje de variabilidad total de la variable dependiente que es explicada por la variable independiente. Estos valores pueden ir del 0 al 1, si el caso del R2 se encuentra más cercano a 1, mayor será la variabilidad explicada, ayudando a indicar el ajuste del modelo.
+
+Por ende, si bien la variable más significativa en Modelo 1  seria libertad económica, por ende, a mayor libertad económica, mayor democracia.
+
+En ese sentido, de acuerdo a los resultados en el Modelo 1, se presenta un R ajustado a 0.589 | (58.9%), esto sugiere que es un modelo que al sobrepasar el 50% indicaría un alto índice de variabilidad en las variables de paridad política, la tasa de crecimeinto de PBI y el índice de libertad económica.
+
+
+
+* Por otra parte, se hará una regresión lineal múltiple con las otras tres variables, las cuales serán el índice de percepción de corrupción, los países con educación secundaria pero no terciaria y el coeficiente de GINI.
+
+
+```{r echo=FALSE}
+modelo= lm(scoredemo ~  cpiscore + educasec + gini_ind, data=data) 
+summary(modelo)
+```
+
+```{r echo=FALSE}
+equatiomatic::extract_eq(modelo, use_coefs = TRUE)
+```
+
+```{r echo=FALSE}
+library(knitr)
+library(modelsummary)
+modelo2=list('OLS asegurados (I)'=modelo)
+modelsummary(modelo, title = "Resumen de Regresion Lineal 2",
+             stars = TRUE,
+             output = "kableExtra")
+```
+
+* Como resultado se observa que la variable con mayor impacto en el índice de democracia es la de la percepción de corrupción.
+
+En el Modelo 2, la variable más significativa seria la percepción de corrupción, por ende, a mayor percepción de corrupción, mayor democracia.
+
+En ese sentido, de acuerdo a los resultados en el Modelo 2, se presenta un R ajustado a 0.535 | (53.5%), este modelo presenta un porcentaje menor por aproximadamente 5% a diferencia del Modelo 1 con las variables anteriores. Sin embargo, sigue siendo un medianamente alto porcentaje que indica el índice de variabilidad en las variables de percepción de corrupción y educación.
+
+
+En esta sección, se realizará una comparación de ambos modelos:
+
+```{r echo=FALSE}
+library(stargazer)
+stargazer(modelo1,modelo2, type ="text")
+```
+
+* Se observa, en los resultados obtenidos al comparar ambos modelos, que existe una fuerza en la relación entre el modelo y la variable dependiente debido a que la diferencia entre las observaciones y los valores pronosticados son pequeñas. De igual forma, el R2 nos indica que el porcentaje de la varianza en la variable dependiente que las variables independientes explican colectivamente ha obtenido un valor mayor al 50%, por ende, nos presenta que el modelo explica en mayor medida la variabilidad de los datos en torno a su media. Sin embargo, el R2 ajustado nos demustra que al haberse obtenido un valor menor a 1 no hay valores predictivos en los modelos.
+
+Por útlimo, se realizará un tercer modelo en el que uniremos las seis variables para observar si es que los resultados cambian, si es que hay más variables con mayor impacto en el nivel de democracia o si es que se da el caso contrario.
+
+
+```{r echo=FALSE}
+modelo= lm(scoredemo ~  cpiscore + educasec + gini_ind + scorelibeco + scoreparpol + scorepbi, data=data) 
+summary(modelo)
+```
+
+```{r echo=FALSE}
+equatiomatic::extract_eq(modelo, use_coefs = TRUE)
+```
+
+```{r echo=FALSE}
+library(knitr)
+library(modelsummary)
+modelo3=list('OLS asegurados (I)'=modelo)
+modelsummary(modelo, title = "Resumen de Regresion Lineal",
+             stars = TRUE,
+             output = "kableExtra")
+```
+
+Por útlimo, al haber analizado los seis factores en conjunto en el mismo modelo se observa que solo la libertad económica tiene un efecto significativo positivo en el índice de democracia. Se debe tener en cuenta que el resultado fue distinto al haber analizado los seis factores por separado (dos grupos de tres), pues en ese caso, se observó que el índice de la percepción de corrupción también tenía un valor significativo. Esto nos brinda como conclusión que a mayor libertad económica, y un mayor índice de la percepción de la corrupción se presentará mayor nivel de democracia. Esto es certero al aplicarlo en la vida cotidianda pues, como se mencionó en un principio, se comprueba que el índice de corrupción tiene influencia en los índices de democracia debido a que mediante la percepción de la corrupción se permite identificar la desconfianza de los ciudadanos en sus Estados debido a que no hay una transparencia en las gestiones políticas y económicas de los países. Asimismo, como se menciona en el portal de CONFIEP (2022), el escritor Fareed Zakaria observa que "la mayoría de las democracias pobres del mundo son democracias no liberales—es decir, regímenes políticos en los cuales no están bien establecidas las libertades, salvo la libertad de elegir a los que gobiernan". Por lo tanto, se entiende que los países con democracias pobres son aquellos que no se rigen por una ideología liberal, por lo tanto, el facctor de la libertad económica tiene un impacto en el índice de democracia de los Estados.
+
+En este último Modelo 3, la variable más significativa seria la libertad económica frente a todas las dempás variables vistas en el Modelo 1 y el Modelo 2.
+
+Finalmente, en los resultados de este Modelo 3, se presenta un R ajustado a 0.619 | (61.8%), este modelo presenta un porcentaje mayor por aproximadamente 5.6% que el Modelo 1 y 2 en promedio. Esto nos indica un alto índice de variabilidad en este tercer modelo.
+
+
+
+## 3. Análisis factorial
+
+Mediante este análisis factorial exploratorio podremos explorar la data y se nos entregará los posibles factores que resúmen cada uno un conjunto de variables.
+
+A continuación, se subseteará la data:
+
+```{r}
+dontselect=c("country")
+select=setdiff(names(data),dontselect) 
+theData=data[,select]
+```
+
+En el siguiente paso se realizará el cálculo de la matriz de correlación:
+
+```{r}
+library(polycor)
+corMatrix=polycor::hetcor(theData)$correlations
+```
+
+La figura mostrada a continuación nos muestra las correlaciones entre algunas de las variables utilizadas:
+
+```{r}
+library(ggcorrplot)
+
+ggcorrplot(corMatrix)
+```
+
+Se observa que las variables de libertad económica y de percepción de la corrupción tienen mayor correlación con la variable dependiente del índice de democracia; sin embargo, el índice de paridad política también presenta cierto nivel de correlación, ´pero menor que las recién mencionadas.
+
+En el siguiente paso se verificará si los datos permiten factorizar
+```{r}
+library(psych)
+psych::KMO(corMatrix)
+```
+Seguidamente, se verificará si la matriz de correlación es adecuada. Para ello se realizarán dos pruebas:
+
+Hnula: La matriz de correlacion es una matriz identidad
+
+```{r}
+cortest.bartlett(corMatrix,n=nrow(theData))$p.value>0.05
+```
+Hnula: La matriz de correlacion es una matriz singular.
+
+```{r}
+library(matrixcalc)
+
+is.singular.matrix(corMatrix)
+```
+* Entonces, se presenta como resultado que la matriz de correlación es una matriz singular, lo cual indica que su determinante es cero y que sus filas o columnas están proporcionalmente interrelacionadas.
+
+Luego se buscará determinar en cuantos factores o variables latentes podríamos redimensionar la data, para ello utilizaremos la función fa.parallel:
+
+```{r}
+fa.parallel(theData, fa = 'fa',correct = T,plot = F)
+```
+* Se obtuvo como resultado que la recomendación es redimensionar la data en 2 factores.
+
+A continuación, se redimensionará a un número menor de factores
+
+Resultado inicial:
+
+```{r}
+library(GPArotation)
+resfa <- fa(theData,
+            nfactors = 2,
+            cor = 'mixed',
+            rotate = "varimax",
+            fm="minres")
+print(resfa$loadings)
+```
+
+Resultado mejorado:
+
+```{r}
+print(resfa$loadings,cutoff = 0.5)
+```
+
+Cuando logramos que cada variable se vaya a un factor, tenemos una estructura simple.
+
+Resultado visual: El resultado lo podemos ver de manera gráfica en la figura a continuación:
+
+```{r}
+fa.diagram(resfa,main = "Resultados del EFA")
+```
+
+Habiendo evaluando los resultados obtenidos procederemos con la siguiente evaluación para responder a la pregunta: ¿Qué variables aportaron más a los factores?
+
+```{r}
+sort(resfa$communality)
+```
+¿Qué variables contribuyen a más de un factor?
+
+```{r}
+sort(resfa$complexity)
+```
+Valores proyectados: Podemos calcular dos indices que resuman los dos factores encontrados.
+
+```{r}
+library(magrittr)
+as.data.frame(resfa$scores)%>%head()
+```
+
+```{r}
+data$scorelibeco=resfa$scores[,1]
+data$cpiscore=resfa$scores[,2]
+```
+
+
+```{r}
+ggplot(data=data, aes(x=scorelibeco,y=scoredemo)) + geom_point() + theme_minimal() + labs(x="Indice de Democracia (original)", y="Indice de Democracia EFA")
+```
+```{r}
+ggplot(data=data, aes(x=cpiscore,y=scoredemo)) + geom_point() + theme_minimal() + labs(x="Indice de Democracia (original)", y="Indice de Democracia EFA")
+```
+```{r}
+library(BBmisc)
+```
+
+```{r}
+scoredemo=normalize(resfa$scores, 
+                       method = "range", 
+                       margin=2, # by column
+                       range = c(0, 10))
+
+data$scorelibeco=scoredemo[,1]
+data$cpiscore=scoredemo[,2]
+
+ggplot(data=data,aes(x=scorelibeco,y=scoredemo)) + geom_point() + theme_minimal() + labs(x="Indice de Democracia (original)", y="Indice de Democracia EFA (cambiado)")
+```
+
+```{r}
+scoredemo=normalize(resfa$scores, 
+                       method = "range", 
+                       margin=2, # by column
+                       range = c(0, 10))
+
+data$scorelibeco=scoredemo[,1]
+data$cpiscore=scoredemo[,2]
+
+ggplot(data=data,aes(x=cpiscore,y=scoredemo)) + geom_point() + theme_minimal() + labs(x="Indice de Democracia (original)", y="Indice de Democracia EFA (cambiado)")
+```
+## Análisis de cluster
+
+* No podemos usar la columna 'country' en la clusterización, pero tampoco debemos perderla, por lo que se recomienda usar esos nombres en lugar del nombre de fila.
+
+```{r}
+dataClus=data[,c(2:8)]
+row.names(dataClus)=data$country
+```
+
+* Ya con los datos en el objeto dataClus, calculemos la matriz de distancias entre los casos (paises):
+
+```{r}
+library(cluster)
+g.dist = daisy(dataClus, metric="gower")
+```
+
+
+# Proceso de clusterización
+
+## Para realizar el proceso de clusterización se hará uso de la Estrategia Jerárquica - divisiva
+
+Primero, se decidirá la cantidad de cluster a utilizar mediante una solicitud usando el estadístico 'gap'
+
+```{r}
+fviz_nbclust(dataClus, hcut,diss=g.dist,method = "gap_stat",k.max = 10,verbose = F,hc_func = "diana")
+```
+
+## Clusterizar vía DIANA
+
+```{r}
+set.seed(123)
+res.diana <- hcut(g.dist, k = 2,hc_func='diana')
+dataClus$diana=res.diana$cluster
+head(dataClus,15)%>%kbl%>%kable_styling()
+```
+
+```{r}
+fviz_dend(res.diana, cex = 0.7, horiz = T, main = "")
+```
+
+
+```{r}
+fviz_silhouette(res.diana,print.summary = F)
+
+```
+* Nótese que no se presentan valores mal clusterizados; por ende, no habrá necesidad de evaluar los resultados.
+
+## Verificando Etiqueta
+* A continuación, exploraremos el promedio de cada cluster.
+
+```{r}
+aggregate(.~ diana, data=dataClus,mean)
+```
+
+* No se observa un orden, por lo tanto se reordenará.
+
+```{r}
+original=aggregate(.~ diana, data=dataClus,mean)
+original[order(original$scoredemo),]
+```
+Esas posiciones hay que usarlas para recodificar:
+
+```{r}
+dataClus$diana=dplyr::recode(dataClus$diana, `1` = 2, `2`=1)
+```
+
+
+Guardemos la columna de DIANA en la data integrada, y eliminemosla de dataClus.
+
+```{r}
+data$dianadatapoor=data$Pais
+data$dianadata=as.ordered(dataClus$diana)
+dataClus$diana=NULL
+```
+
+# Visualización comparativa
+
+Vamos a usar la matriz de distancia para darle a cada país una coordenada, tal que la distancia entre esos paises se refleje en sus posiciones. Eso requiere una técnica que proyecte las dimensiones originales en un plano bidimensional. Para ello usaremos la técnica llamada escalamiento multidimensional. Veamos algunas coordenadas.
+
+
+```{r}
+proyeccion = cmdscale(g.dist, k=2,add = T) 
+head(proyeccion$points,20)
+```
+
+Habiendo calculado la proyeccción, recuperemos las coordenadas del mapa del mundo basado en nuestras dimensiones nuevas:
+
+
+
+```{r}
+data$dim1 <- proyeccion$points[,1]
+data$dim2 <- proyeccion$points[,2]
+```
+
+```{r}
+#DATA PAÍSES
+ISODATA = import("https://raw.githubusercontent.com/Gbaldeonb/Estadistica/main/ISODATA.csv")
+```
+
+```{r}
+#VISUALIZANDO ISO DATA 
+colnames(ISODATA) = c("name","country", "iso2", "iso3")
+ISODATA$name=NULL
+ISODATA$iso2=NULL
+#Salvando Namibia
+ISODATA[ISODATA$Country=='Namibia','iso3']= 'NA'
+```
+
+```{r}
+library(rio)
+library(dplyr)
+library(ggplot2)
+library(cowplot)
+library(kableExtra)
+library(reshape)
+library(DT)
+library(equatiomatic)
+library(modelsummary)
+library(factoextra)
+library(cluster)
+```
+
+```{r}
+mapDIS=sf::read_sf("shapes")
+str(mapDIS)
+#merge iso + variable
+DATAVARIABLEDEPENDIENTE=inner_join(ISODATA,INDFELDATA ,by="Country") 
+#Juntamos información con el shape:
+mapDIS2=merge(mapDIS,DATAVARIABLEDEPENDIENTE,by.x='iso_3166_1_',by.y='iso3', all.x = T) #siempre primero el shape
+#PRIMERO EN X EL ISO DE SHAPES Y EN Y EL ISO DE DATA
+mapDIS2
+```
+
+
+
+
+
+
+
+```{r}
+library(ggrepel)
+base= ggplot(data,aes(x=dim1, y=dim2,label=row.names(dataClus))) 
+base + geom_text_repel(size=3, max.overlaps = 50,min.segment.length = unit(0, 'lines'))
+```
+Coloreemos el mapa anterior segun el cluster al que corresponden.
+
+
+
+
