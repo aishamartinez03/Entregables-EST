@@ -11,6 +11,19 @@ output:
 subtitle: "Curso: POL304 - Estadística para el análisis político 2"
 ---
 
+```{r}
+library(rio)
+library(dplyr)
+library(ggplot2)
+library(cowplot)
+library(kableExtra)
+library(reshape)
+library(DT)
+library(equatiomatic)
+library(modelsummary)
+library(factoextra)
+library(cluster)
+```
 
 ## Introducción
 
@@ -372,19 +385,7 @@ ISODATA$iso2=NULL
 ISODATA[ISODATA$Country=='Namibia','iso3']= 'NA'
 ```
 
-```{r}
-library(rio)
-library(dplyr)
-library(ggplot2)
-library(cowplot)
-library(kableExtra)
-library(reshape)
-library(DT)
-library(equatiomatic)
-library(modelsummary)
-library(factoextra)
-library(cluster)
-```
+
 
 ```{r}
 mapDIS=sf::read_sf("shapes")
