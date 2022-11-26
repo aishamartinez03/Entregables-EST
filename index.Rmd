@@ -11,6 +11,19 @@ output:
 subtitle: "Curso: POL304 - Estadística para el análisis político 2"
 ---
 
+```{r, echo=FALSE}
+library(rio)
+library(dplyr)
+library(ggplot2)
+library(cowplot)
+library(kableExtra)
+library(reshape)
+library(DT)
+library(equatiomatic)
+library(modelsummary)
+library(factoextra)
+library(cluster)
+```
 
 ## Introducción
 
@@ -29,16 +42,16 @@ Al visualizar la data sin haber realizado ningún análisis estadístico, se obs
 
 En este caso, se hará una regresión lineal múltiple con tres primeras variables, las cuales serán el índice de libertad económica, la tasa de crecimiento de PBI y el puntaje de los países en su índice de paridad política.
 
-```{r echo=FALSE}
+```{r, echo=FALSE}
 modelo= lm(scoredemo ~ scorelibeco + scoreparpol + scorepbi, data=data) 
 summary(modelo)
 ```
 
-```{r echo=FALSE}
+```{r, echo=FALSE}
 equatiomatic::extract_eq(modelo, use_coefs = TRUE)
 ```
 
-```{r echo=FALSE}
+```{r, echo=FALSE}
 library(knitr)
 library(modelsummary)
 modelo1=list('OLS asegurados (I)'=modelo)
@@ -57,19 +70,19 @@ En ese sentido, de acuerdo a los resultados en el Modelo 1, se presenta un R aju
 
 
 
-Por otra parte, se hará una regresión lineal múltiple con las otras tres variables, las cuales serán el índice de percepción de corrupción, los países con educación secundaria pero no terciaria y el coeficiente de GINI.
+* Por otra parte, se hará una regresión lineal múltiple con las otras tres variables, las cuales serán el índice de percepción de corrupción, los países con educación secundaria pero no terciaria y el coeficiente de GINI.
 
 
-```{r echo=FALSE}
+```{r, echo=FALSE}
 modelo= lm(scoredemo ~  cpiscore + educasec + gini_ind, data=data) 
 summary(modelo)
 ```
 
-```{r echo=FALSE}
+```{r, echo=FALSE}
 equatiomatic::extract_eq(modelo, use_coefs = TRUE)
 ```
 
-```{r echo=FALSE}
+```{r, echo=FALSE}
 library(knitr)
 library(modelsummary)
 modelo2=list('OLS asegurados (I)'=modelo)
@@ -87,7 +100,7 @@ En ese sentido, de acuerdo a los resultados en el Modelo 2, se presenta un R aju
 
 En esta sección, se realizará una comparación de ambos modelos:
 
-```{r echo=FALSE}
+```{r, echo=FALSE}
 library(stargazer)
 stargazer(modelo1,modelo2, type ="text")
 ```
@@ -97,16 +110,16 @@ stargazer(modelo1,modelo2, type ="text")
 Por útlimo, se realizará un tercer modelo en el que uniremos las seis variables para observar si es que los resultados cambian, si es que hay más variables con mayor impacto en el nivel de democracia o si es que se da el caso contrario.
 
 
-```{r echo=FALSE}
+```{r, echo=FALSE}
 modelo= lm(scoredemo ~  cpiscore + educasec + gini_ind + scorelibeco + scoreparpol + scorepbi, data=data) 
 summary(modelo)
 ```
 
-```{r echo=FALSE}
+```{r, echo=FALSE}
 equatiomatic::extract_eq(modelo, use_coefs = TRUE)
 ```
 
-```{r echo=FALSE}
+```{r, echo=FALSE}
 library(knitr)
 library(modelsummary)
 modelo3=list('OLS asegurados (I)'=modelo)
@@ -129,7 +142,7 @@ Mediante este análisis factorial exploratorio podremos explorar la data y se no
 
 A continuación, se subseteará la data:
 
-```{r}
+```{r, echo=FALSE}
 dontselect=c("country")
 select=setdiff(names(data),dontselect) 
 theData=data[,select]
@@ -137,14 +150,14 @@ theData=data[,select]
 
 En el siguiente paso se realizará el cálculo de la matriz de correlación:
 
-```{r}
+```{r, echo=FALSE}
 library(polycor)
 corMatrix=polycor::hetcor(theData)$correlations
 ```
 
 La figura mostrada a continuación nos muestra las correlaciones entre algunas de las variables utilizadas:
 
-```{r}
+```{r, echo=FALSE}
 library(ggcorrplot)
 
 ggcorrplot(corMatrix)
@@ -153,7 +166,7 @@ ggcorrplot(corMatrix)
 Se observa que las variables de libertad económica y de percepción de la corrupción tienen mayor correlación con la variable dependiente del índice de democracia; sin embargo, el índice de paridad política también presenta cierto nivel de correlación, ´pero menor que las recién mencionadas.
 
 En el siguiente paso se verificará si los datos permiten factorizar
-```{r}
+```{r, echo=FALSE}
 library(psych)
 psych::KMO(corMatrix)
 ```
@@ -161,12 +174,12 @@ Seguidamente, se verificará si la matriz de correlación es adecuada. Para ello
 
 Hnula: La matriz de correlacion es una matriz identidad
 
-```{r}
+```{r, echo=FALSE}
 cortest.bartlett(corMatrix,n=nrow(theData))$p.value>0.05
 ```
 Hnula: La matriz de correlacion es una matriz singular.
 
-```{r}
+```{r, echo=FALSE}
 library(matrixcalc)
 
 is.singular.matrix(corMatrix)
@@ -175,7 +188,7 @@ is.singular.matrix(corMatrix)
 
 Luego se buscará determinar en cuantos factores o variables latentes podríamos redimensionar la data, para ello utilizaremos la función fa.parallel:
 
-```{r}
+```{r, echo=FALSE}
 fa.parallel(theData, fa = 'fa',correct = T,plot = F)
 ```
 * Se obtuvo como resultado que la recomendación es redimensionar la data en 2 factores.
@@ -184,7 +197,7 @@ A continuación, se redimensionará a un número menor de factores
 
 Resultado inicial:
 
-```{r}
+```{r, echo=FALSE}
 library(GPArotation)
 resfa <- fa(theData,
             nfactors = 2,
@@ -196,7 +209,7 @@ print(resfa$loadings)
 
 Resultado mejorado:
 
-```{r}
+```{r, echo=FALSE}
 print(resfa$loadings,cutoff = 0.5)
 ```
 
@@ -204,44 +217,46 @@ Cuando logramos que cada variable se vaya a un factor, tenemos una estructura si
 
 Resultado visual: El resultado lo podemos ver de manera gráfica en la figura a continuación:
 
-```{r}
+```{r, echo=FALSE}
 fa.diagram(resfa,main = "Resultados del EFA")
 ```
 
 Habiendo evaluando los resultados obtenidos procederemos con la siguiente evaluación para responder a la pregunta: ¿Qué variables aportaron más a los factores?
 
-```{r}
+```{r, echo=FALSE}
 sort(resfa$communality)
 ```
 ¿Qué variables contribuyen a más de un factor?
 
-```{r}
+```{r, echo=FALSE}
 sort(resfa$complexity)
 ```
 Valores proyectados: Podemos calcular dos indices que resuman los dos factores encontrados.
 
-```{r}
+```{r, echo=FALSE}
 library(magrittr)
 as.data.frame(resfa$scores)%>%head()
 ```
 
-```{r}
+```{r, echo=FALSE}
 data$scorelibeco=resfa$scores[,1]
 data$cpiscore=resfa$scores[,2]
 ```
 
 
-```{r}
+```{r, echo=FALSE}
 ggplot(data=data, aes(x=scorelibeco,y=scoredemo)) + geom_point() + theme_minimal() + labs(x="Indice de Democracia (original)", y="Indice de Democracia EFA")
 ```
-```{r}
+
+```{r, echo=FALSE}
 ggplot(data=data, aes(x=cpiscore,y=scoredemo)) + geom_point() + theme_minimal() + labs(x="Indice de Democracia (original)", y="Indice de Democracia EFA")
 ```
-```{r}
+
+```{r, echo=FALSE}
 library(BBmisc)
 ```
 
-```{r}
+```{r, echo=FALSE}
 scoredemo=normalize(resfa$scores, 
                        method = "range", 
                        margin=2, # by column
@@ -253,7 +268,7 @@ data$cpiscore=scoredemo[,2]
 ggplot(data=data,aes(x=scorelibeco,y=scoredemo)) + geom_point() + theme_minimal() + labs(x="Indice de Democracia (original)", y="Indice de Democracia EFA (cambiado)")
 ```
 
-```{r}
+```{r, echo=FALSE}
 scoredemo=normalize(resfa$scores, 
                        method = "range", 
                        margin=2, # by column
@@ -268,14 +283,14 @@ ggplot(data=data,aes(x=cpiscore,y=scoredemo)) + geom_point() + theme_minimal() +
 
 * No podemos usar la columna 'country' en la clusterización, pero tampoco debemos perderla, por lo que se recomienda usar esos nombres en lugar del nombre de fila.
 
-```{r}
+```{r, echo=FALSE}
 dataClus=data[,c(2:8)]
 row.names(dataClus)=data$country
 ```
 
 * Ya con los datos en el objeto dataClus, calculemos la matriz de distancias entre los casos (paises):
 
-```{r}
+```{r, echo=FALSE}
 library(cluster)
 g.dist = daisy(dataClus, metric="gower")
 ```
@@ -287,25 +302,25 @@ g.dist = daisy(dataClus, metric="gower")
 
 Primero, se decidirá la cantidad de cluster a utilizar mediante una solicitud usando el estadístico 'gap'
 
-```{r}
+```{r, echo=FALSE}
 fviz_nbclust(dataClus, hcut,diss=g.dist,method = "gap_stat",k.max = 10,verbose = F,hc_func = "diana")
 ```
 
 ## Clusterizar vía DIANA
 
-```{r}
+```{r, echo=FALSE}
 set.seed(123)
 res.diana <- hcut(g.dist, k = 2,hc_func='diana')
 dataClus$diana=res.diana$cluster
 head(dataClus,15)%>%kbl%>%kable_styling()
 ```
 
-```{r}
+```{r, echo=FALSE}
 fviz_dend(res.diana, cex = 0.7, horiz = T, main = "")
 ```
 
 
-```{r}
+```{r, echo=FALSE}
 fviz_silhouette(res.diana,print.summary = F)
 
 ```
@@ -314,26 +329,26 @@ fviz_silhouette(res.diana,print.summary = F)
 ## Verificando Etiqueta
 * A continuación, exploraremos el promedio de cada cluster.
 
-```{r}
+```{r, echo=FALSE}
 aggregate(.~ diana, data=dataClus,mean)
 ```
 
 * No se observa un orden, por lo tanto se reordenará.
 
-```{r}
+```{r, echo=FALSE}
 original=aggregate(.~ diana, data=dataClus,mean)
 original[order(original$scoredemo),]
 ```
 Esas posiciones hay que usarlas para recodificar:
 
-```{r}
+```{r, echo=FALSE}
 dataClus$diana=dplyr::recode(dataClus$diana, `1` = 2, `2`=1)
 ```
 
 
 Guardemos la columna de DIANA en la data integrada, y eliminemosla de dataClus.
 
-```{r}
+```{r, echo=FALSE}
 data$dianadatapoor=data$Pais
 data$dianadata=as.ordered(dataClus$diana)
 dataClus$diana=NULL
@@ -344,7 +359,7 @@ dataClus$diana=NULL
 Vamos a usar la matriz de distancia para darle a cada país una coordenada, tal que la distancia entre esos paises se refleje en sus posiciones. Eso requiere una técnica que proyecte las dimensiones originales en un plano bidimensional. Para ello usaremos la técnica llamada escalamiento multidimensional. Veamos algunas coordenadas.
 
 
-```{r}
+```{r, echo=FALSE}
 proyeccion = cmdscale(g.dist, k=2,add = T) 
 head(proyeccion$points,20)
 ```
@@ -353,17 +368,17 @@ Habiendo calculado la proyeccción, recuperemos las coordenadas del mapa del mun
 
 
 
-```{r}
+```{r, echo=FALSE}
 data$dim1 <- proyeccion$points[,1]
 data$dim2 <- proyeccion$points[,2]
 ```
 
-```{r}
+```{r, echo=FALSE}
 #DATA PAÍSES
 ISODATA = import("https://raw.githubusercontent.com/Gbaldeonb/Estadistica/main/ISODATA.csv")
 ```
 
-```{r}
+```{r, echo=FALSE}
 #VISUALIZANDO ISO DATA 
 colnames(ISODATA) = c("name","country", "iso2", "iso3")
 ISODATA$name=NULL
@@ -372,25 +387,13 @@ ISODATA$iso2=NULL
 ISODATA[ISODATA$Country=='Namibia','iso3']= 'NA'
 ```
 
-```{r}
-library(rio)
-library(dplyr)
-library(ggplot2)
-library(cowplot)
-library(kableExtra)
-library(reshape)
-library(DT)
-library(equatiomatic)
-library(modelsummary)
-library(factoextra)
-library(cluster)
-```
 
-```{r}
+
+```{r, echo=FALSE}
 mapDIS=sf::read_sf("shapes")
 str(mapDIS)
 #merge iso + variable
-DATAVARIABLEDEPENDIENTE=inner_join(ISODATA,INDFELDATA ,by="Country") 
+DATAVARIABLEDEPENDIENTE=inner_join(ISODATA,data ,by="country") 
 #Juntamos información con el shape:
 mapDIS2=merge(mapDIS,DATAVARIABLEDEPENDIENTE,by.x='iso_3166_1_',by.y='iso3', all.x = T) #siempre primero el shape
 #PRIMERO EN X EL ISO DE SHAPES Y EN Y EL ISO DE DATA
@@ -398,18 +401,36 @@ mapDIS2
 ```
 
 
-
-
-
-
-
-```{r}
+```{r, echo=FALSE}
 library(ggrepel)
 base= ggplot(data,aes(x=dim1, y=dim2,label=row.names(dataClus))) 
 base + geom_text_repel(size=3, max.overlaps = 50,min.segment.length = unit(0, 'lines'))
 ```
+
 Coloreemos el mapa anterior segun el cluster al que corresponden.
 
+```{r, echo=FALSE}
+library(ggplot2)
+
+mapaleyendaL= ggplot(mapDIS2)+ geom_sf() + theme_light()
+
+mapaleyL= mapaleyendaL + geom_sf(data=mapDIS2,
+              aes(fill=`scoredemo`),color = "gray")
+      
+mapa= mapaleyL +
+coord_sf() + 
+scale_fill_gradient(low = "seashell",  high = "firebrick", breaks=seq(from=0, to=100, by=20)) + theme_void() + 
+  
+theme(axis.title = element_blank(), axis.text = element_blank(), legend.position = "bottom") + labs(fill=" ") + theme(legend.text = element_text(size = 8)) +
+  
+labs(title = "ÍNDICE DE DEMOCRACIA EN EL MUNDO") +
+  
+theme(
+plot.title = element_text(color="#344D67", size=10, face="bold"))
+
+mapa
+
+```
 
 
 
