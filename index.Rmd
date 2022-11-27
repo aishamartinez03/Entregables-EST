@@ -11,6 +11,7 @@ output:
 subtitle: "Curso: POL304 - Estadística para el análisis político 2"
 ---
 
+
 ```{r, echo=FALSE}
 library(rio)
 library(dplyr)
