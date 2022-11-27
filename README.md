@@ -60,6 +60,7 @@ Base de datos: IPU PARLINE (parpol_data)
 Justificación: Nos permitirá conocer que el índice de paridad política, entendido como el instrumento que permite ejercer los derechos políticos de las mujeres en un determinado país, se presenta como un factor influyente en el aumento de democracia en cada país. Este es un factor importante para la investigación debido a que, como se menciona en el artículo: “Índice de paridad política” de Atenea es Paridad (Mecanismo incentivado por ONU Mujeres, PNUD e IDEA para acelerar la participación política paritaria de las mujeres en América Latina), “Por justicia democrática, las mujeres constituyen el 50% de la población y deben participar igualitariamente en la toma de decisiones”, de ser así se demostraría un mayor índice de democracia. Como se afirma en el texto de la ONPE "Norma Marco para consolidar la democracia paritaria", "la paridad es uno de los propulsores determinantes de la democracia, cuyo fin es alcanzar la igualdad en el ejercicio del poder, en la toma de decisiones, en los mecanismos de participación y representación social y política (...)".
 
 
+Githubpage: https://aishamartinez03.github.io/Entregables-EST/
 
 
 
