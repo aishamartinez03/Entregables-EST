@@ -24,6 +24,7 @@ library(equatiomatic)
 library(modelsummary)
 library(factoextra)
 library(cluster)
+#summary
 ```
 
 ## Introducción
@@ -45,11 +46,12 @@ En este caso, se hará una regresión lineal múltiple con tres primeras variabl
 
 ```{r, echo=FALSE}
 modelo= lm(scoredemo ~ scorelibeco + scoreparpol + scorepbi, data=data) 
-summary(modelo)
+#summary(modelo)
 ```
 
 ```{r, echo=FALSE}
 equatiomatic::extract_eq(modelo, use_coefs = TRUE)
+#summary(equatiomatic)
 ```
 
 ```{r, echo=FALSE}
@@ -76,11 +78,12 @@ En ese sentido, de acuerdo a los resultados en el Modelo 1, se presenta un R aju
 
 ```{r, echo=FALSE}
 modelo= lm(scoredemo ~  cpiscore + educasec + gini_ind, data=data) 
-summary(modelo)
+#summary(modelo)
 ```
 
 ```{r, echo=FALSE}
 equatiomatic::extract_eq(modelo, use_coefs = TRUE)
+#summary(equatiomatic)
 ```
 
 ```{r, echo=FALSE}
@@ -113,11 +116,12 @@ Por útlimo, se realizará un tercer modelo en el que uniremos las seis variable
 
 ```{r, echo=FALSE}
 modelo= lm(scoredemo ~  cpiscore + educasec + gini_ind + scorelibeco + scoreparpol + scorepbi, data=data) 
-summary(modelo)
+#summary(modelo)
 ```
 
 ```{r, echo=FALSE}
 equatiomatic::extract_eq(modelo, use_coefs = TRUE)
+#summary(equatiomatic)
 ```
 
 ```{r, echo=FALSE}
@@ -154,6 +158,7 @@ En el siguiente paso se realizará el cálculo de la matriz de correlación:
 ```{r, echo=FALSE}
 library(polycor)
 corMatrix=polycor::hetcor(theData)$correlations
+#summary
 ```
 
 La figura mostrada a continuación nos muestra las correlaciones entre algunas de las variables utilizadas:
@@ -170,6 +175,7 @@ En el siguiente paso se verificará si los datos permiten factorizar
 ```{r, echo=FALSE}
 library(psych)
 psych::KMO(corMatrix)
+#summary
 ```
 Seguidamente, se verificará si la matriz de correlación es adecuada. Para ello se realizarán dos pruebas:
 
@@ -186,63 +192,6 @@ library(matrixcalc)
 is.singular.matrix(corMatrix)
 ```
 * Entonces, se presenta como resultado que no se puede continuar con el análisis de factorial debido a que, al tratarse del uso de variables designadas como índices contienen una mayor cantidad de variables dentro de estas; por ende, se procederá a realizar el análisis.
-
-Luego se buscará determinar en cuantos factores o variables latentes podríamos redimensionar la data, para ello utilizaremos la función fa.parallel:
-
-```{r, echo=FALSE}
-fa.parallel(theData, fa = 'fa',correct = T,plot = F)
-```
-* Se obtuvo como resultado que la recomendación es redimensionar la data en 2 factores.
-
-A continuación, se redimensionará a un número menor de factores
-
-Resultado inicial:
-
-```{r, echo=FALSE}
-library(GPArotation)
-resfa <- fa(theData,
-            nfactors = 2,
-            cor = 'mixed',
-            rotate = "varimax",
-            fm="minres")
-print(resfa$loadings)
-```
-
-Resultado mejorado:
-
-```{r, echo=FALSE}
-print(resfa$loadings,cutoff = 0.5)
-```
-
-Cuando logramos que cada variable se vaya a un factor, tenemos una estructura simple.
-
-Resultado visual: El resultado lo podemos ver de manera gráfica en la figura a continuación:
-
-```{r, echo=FALSE}
-fa.diagram(resfa,main = "Resultados del EFA")
-```
-
-Habiendo evaluando los resultados obtenidos procederemos con la siguiente evaluación para responder a la pregunta: ¿Qué variables aportaron más a los factores?
-
-```{r, echo=FALSE}
-sort(resfa$communality)
-```
-¿Qué variables contribuyen a más de un factor?
-
-```{r, echo=FALSE}
-sort(resfa$complexity)
-```
-Valores proyectados: Podemos calcular dos indices que resuman los dos factores encontrados.
-
-```{r, echo=FALSE}
-library(magrittr)
-as.data.frame(resfa$scores)%>%head()
-```
-
-```{r, echo=FALSE}
-data$scorelibeco=resfa$scores[,1]
-data$cpiscore=resfa$scores[,2]
-```
 
 
 
@@ -282,6 +231,7 @@ dataClus$diana=res.diana$cluster
 head(dataClus,15)%>%kbl%>%kable_styling()
 ```
 
+
 ```{r, echo=FALSE}
 fviz_dend(res.diana, cex = 0.7, horiz = T, main = "")
 ```
@@ -299,6 +249,7 @@ fviz_silhouette(res.diana,print.summary = F)
 ```{r, echo=FALSE}
 aggregate(.~ diana, data=dataClus,mean)
 ```
+
 
 * No se observa un orden, por lo tanto se reordenará.
 
@@ -365,6 +316,8 @@ DATAVARIABLEDEPENDIENTE=inner_join(ISODATA,data ,by="country")
 mapDIS2=merge(mapDIS,DATAVARIABLEDEPENDIENTE,by.x='iso_3166_1_',by.y='iso3', all.x = T) #siempre primero el shape
 #PRIMERO EN X EL ISO DE SHAPES Y EN Y EL ISO DE DATA
 mapDIS2
+
+#summary
 ```
 
 
