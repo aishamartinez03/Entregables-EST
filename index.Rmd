@@ -184,7 +184,7 @@ library(matrixcalc)
 
 is.singular.matrix(corMatrix)
 ```
-* Entonces, se presenta como resultado que la matriz de correlación es una matriz singular, lo cual indica que su determinante es cero y que sus filas o columnas están proporcionalmente interrelacionadas.
+* Entonces, se presenta como resultado que no se puede continuar con el análisis de factorial debido a que, al tratarse del uso de variables designadas como índices contienen una mayor cantidad de variables dentro de estas; por ende, se procederá a realizar el análisis.
 
 Luego se buscará determinar en cuantos factores o variables latentes podríamos redimensionar la data, para ello utilizaremos la función fa.parallel:
 
@@ -244,41 +244,7 @@ data$cpiscore=resfa$scores[,2]
 ```
 
 
-```{r, echo=FALSE}
-ggplot(data=data, aes(x=scorelibeco,y=scoredemo)) + geom_point() + theme_minimal() + labs(x="Indice de Democracia (original)", y="Indice de Democracia EFA")
-```
 
-```{r, echo=FALSE}
-ggplot(data=data, aes(x=cpiscore,y=scoredemo)) + geom_point() + theme_minimal() + labs(x="Indice de Democracia (original)", y="Indice de Democracia EFA")
-```
-
-```{r, echo=FALSE}
-library(BBmisc)
-```
-
-```{r, echo=FALSE}
-scoredemo=normalize(resfa$scores, 
-                       method = "range", 
-                       margin=2, # by column
-                       range = c(0, 10))
-
-data$scorelibeco=scoredemo[,1]
-data$cpiscore=scoredemo[,2]
-
-ggplot(data=data,aes(x=scorelibeco,y=scoredemo)) + geom_point() + theme_minimal() + labs(x="Indice de Democracia (original)", y="Indice de Democracia EFA (cambiado)")
-```
-
-```{r, echo=FALSE}
-scoredemo=normalize(resfa$scores, 
-                       method = "range", 
-                       margin=2, # by column
-                       range = c(0, 10))
-
-data$scorelibeco=scoredemo[,1]
-data$cpiscore=scoredemo[,2]
-
-ggplot(data=data,aes(x=cpiscore,y=scoredemo)) + geom_point() + theme_minimal() + labs(x="Indice de Democracia (original)", y="Indice de Democracia EFA (cambiado)")
-```
 ## Análisis de cluster
 
 * No podemos usar la columna 'country' en la clusterización, pero tampoco debemos perderla, por lo que se recomienda usar esos nombres en lugar del nombre de fila.
@@ -432,5 +398,5 @@ mapa
 
 ```
 
-
+Paises como Canadá, del centro de Europa, de Oceanía y de la región de Sudamérica (como Chile y Uruguay) y algunos países del sur de Africa tienen los índices más altos de democracia a comparación de la mayoría de países de la región de Africa y Rusia (los sombreados de un rojo más fuerte). Esto se debe a que, como se indica en la hipótesis, ciertas variables independientes afectan con menor o mayor rango de intensidad a la variable dependiente "Índice de democracia". Es por ello que los países anterioremnte mencionados tienen un mayor índice de democracia, pues tienen también un mayor índice de variables como la percepción de la corrupción y el índice de libertad económica.
 
